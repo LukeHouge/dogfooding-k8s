@@ -25,6 +25,9 @@ server:
     #   memory: 256Mi
     limits:
       memory: 256Mi
+  service:
+    type: NodePort
+    nodePort: 30080
 
 controller:
   metrics:

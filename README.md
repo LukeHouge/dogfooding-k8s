@@ -12,3 +12,4 @@
 - kind will auto generate a `~/.kube/config` to connect to cluster
 - then you can view pods, apps, deployments, services, etc.
 - can port forward in services
+- login is admin and password can get from secrets

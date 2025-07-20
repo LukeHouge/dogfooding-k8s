@@ -87,12 +87,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: goldpinger-cluster0
+  name: goldpinger
   namespace: default
   labels:
     app: goldpinger
 spec:
-  type: LoadBalancer # use LoadBalancer to expose the service
+  type: LoadBalancer # use NodePort to expose the service on each node's IP
   ports:
     - port: 8080
       name: http

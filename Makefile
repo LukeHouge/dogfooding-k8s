@@ -9,4 +9,4 @@ make apply:
 	# kustomize build monitoring --enable-helm | kubectl apply --server-side -f - || true
 	kubectl create namespace argocd
 	kustomize build argocd --enable-helm | kubectl apply --server-side -f -
-	kubectl apply -f argocd/apps
+	kubectl apply -k argocd/apps
