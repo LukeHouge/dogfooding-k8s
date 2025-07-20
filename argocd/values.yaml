@@ -3,9 +3,13 @@ configs:
     resource.ignoreResourceUpdatesEnabled: "false"
     exec.enabled: "true"
     kustomize.buildOptions: --enable-helm
+    # Fast polling for demo environment
+    application.resyncPeriod: "30s"
   params:
     controller.repo.server.timeout.seconds: "30"
     server.repo.server.timeout.seconds: "30"
+    # Fast image scanning for demos
+    image-updater.interval: "30s"
   repositories:
     argoproj-helm:
       type: helm

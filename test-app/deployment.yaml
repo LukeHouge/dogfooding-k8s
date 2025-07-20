@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: test-app
-        image: ghcr.io/lukehouge/fastapi-app:latest  # This will be updated by ArgoCD Image Updater
+        image: ghcr.io/lukehouge/fastapi-app:c210f42c353383b4936658dde14d93e64ae2e83a  # This will be updated by ArgoCD Image Updater
         ports:
         - containerPort: 8000
           name: http
