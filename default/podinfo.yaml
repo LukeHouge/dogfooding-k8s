@@ -59,7 +59,7 @@ spec:
   ports:
   - port: 9898
     targetPort: 9898
-    nodePort: 30080
+    nodePort: 30081
     name: http
   - port: 9797
     targetPort: 9797

@@ -89,15 +89,16 @@ kubectl apply -k argocd/apps
 - **Sync Policy**: Automated with self-healing enabled
 
 ## 🔍 Accessing Services
-- **ArgoCD UI:** After deployment, ArgoCD will be available on `localhost:30080` or `localhost:30081` (see `kind-config.yaml` for details).
-- **Login:** Username is admin. Retrieve the password with: `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+- **ArgoCD UI:** Available on `localhost:30080` after deployment
+- **ArgoCD Login:** Username is admin. Retrieve the password with: `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
+- **Podinfo Demo App:** Available on `localhost:30081` after deployment
 - **Port Forwarding:** You can also use `kubectl port-forward` or access via NodePort services (ex: `kubectl port-forward -n default svc/goldpinger 8080:8080`).
 
 ### Direct Node Access
 
 Services are exposed on the configured ports:
-- **Port 30080**: Available on localhost:30080
-- **Port 30081**: Available on localhost:30081
+- **Port 30080**: ArgoCD UI (localhost:30080)
+- **Port 30081**: Podinfo Demo App (localhost:30081)
 
 ## 🛠️ Development Workflow
 
@@ -219,11 +220,11 @@ kubectl rollout history deployment/podinfo
 ### Health Checks and Monitoring
 ```bash
 # Check health endpoints
-curl localhost:30080/healthz
-curl localhost:30080/readyz
+curl localhost:30081/healthz
+curl localhost:30081/readyz
 
 # View metrics (Prometheus format)
-curl localhost:30080/metrics
+curl localhost:30081/metrics
 
 # Check resource usage
 kubectl top pods -l app.kubernetes.io/name=podinfo
