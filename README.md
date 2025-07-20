@@ -9,6 +9,7 @@ This repository sets up a multi-node Kubernetes cluster with:
 - **Kind Cluster**: 1 control-plane + 1 worker node
 - **ArgoCD**: GitOps deployment tool for managing applications
 - **Podinfo**: Demo application showcasing Kubernetes features
+- **Test App**: FastAPI application with automated image updates
 - **Port Forwarding**: Services exposed on localhost:30080 and localhost:30081
 
 ## 📁 Repository Structure
@@ -23,7 +24,15 @@ dogfooding-k8s/
 ├── default/                   # Default namespace applications
 │   ├── goldpinger.yaml       # Network monitoring tool
 │   ├── debug.yaml            # Network debugging pod
+│   ├── podinfo.yaml          # Demo application for K8s features
 │   └── kustomization.yaml    # Default namespace resources
+├── test-app/                  # FastAPI test application
+│   ├── deployment.yaml       # Test app deployment with auto-update
+│   ├── service.yaml          # Test app service
+│   ├── ingress.yaml          # Test app ingress
+│   ├── namespace.yaml        # Test app namespace
+│   └── kustomization.yaml    # Test app resources
+├── kube-system/              # System-level components
 ├── kind-config.yaml          # Kind cluster configuration
 ├── Makefile                  # Automation scripts
 └── README.md                # This file
@@ -92,6 +101,7 @@ kubectl apply -k argocd/apps
 - **ArgoCD UI:** Available on `localhost:30080` after deployment
 - **ArgoCD Login:** Username is admin. Retrieve the password with: `kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 - **Podinfo Demo App:** Available on `localhost:30081` after deployment
+- **Test App (FastAPI):** Port-forward with `kubectl port-forward -n test-app svc/test-app 8080:80`
 - **Port Forwarding:** You can also use `kubectl port-forward` or access via NodePort services (ex: `kubectl port-forward -n default svc/goldpinger 8080:8080`).
 
 ### Direct Node Access
@@ -229,3 +239,39 @@ curl localhost:30081/metrics
 # Check resource usage
 kubectl top pods -l app.kubernetes.io/name=podinfo
 ```
+
+## 🚀 GitOps with Test App
+
+The FastAPI test app demonstrates modern CI/CD with automated image updates:
+
+### Image Update Workflow
+```bash
+# View current image version
+kubectl get deployment test-app -n test-app -o jsonpath='{.spec.template.spec.containers[0].image}'
+
+# Check ArgoCD Image Updater logs
+kubectl logs -n argocd -l app.kubernetes.io/name=argocd-image-updater
+
+# View image update annotations
+kubectl get deployment test-app -n test-app -o yaml | grep -A5 -B5 argocd-image-updater
+```
+
+### Manual Testing
+```bash
+# Check test app status
+kubectl get pods -n test-app
+
+# Test the FastAPI app
+kubectl port-forward -n test-app svc/test-app 8080:80
+# Then visit: http://localhost:8080/docs
+
+# View application logs
+kubectl logs -n test-app -l app.kubernetes.io/name=test-app
+```
+
+### GitOps Flow
+1. **Code changes** pushed to [test_app repo](https://github.com/LukeHouge/test_app)
+2. **GitHub Action** builds and pushes new image to GHCR
+3. **ArgoCD Image Updater** detects new image and updates deployment
+4. **ArgoCD** syncs changes and performs rolling update
+5. **New version** deployed automatically

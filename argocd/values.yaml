@@ -11,6 +11,11 @@ configs:
       type: helm
       name: argo-cd
       url: https://argoproj.github.io/argo-helm
+  # Enable ArgoCD Image Updater
+  configs:
+    image-updater:
+      git.user: argocd-image-updater
+      git.email: noreply@argoproj.io
 server:
   env:
     - name: ARGOCD_GRPC_KEEP_ALIVE_MIN
@@ -46,6 +51,18 @@ applicationSet:
       memory: 128Mi
     limits:
       memory: 128Mi
+
+# Enable ArgoCD Image Updater
+image:
+  updater:
+    enabled: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
 
 repoServer:
   metrics:
