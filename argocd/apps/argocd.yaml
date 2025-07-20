@@ -30,7 +30,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: argocd/apps
+    path: argocd
     repoURL: https://github.com/LukeHouge/dogfooding-k8s
     targetRevision: HEAD
   syncPolicy:
