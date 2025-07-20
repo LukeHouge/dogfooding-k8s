@@ -7,7 +7,7 @@ metadata:
   labels:
     app.kubernetes.io/name: test-app
   annotations:
-    argocd-image-updater.argoproj.io/image-list: test-app=ghcr.io/lukehouge/test_app
+    argocd-image-updater.argoproj.io/image-list: test-app=ghcr.io/LukeHouge/fastapi-app
     argocd-image-updater.argoproj.io/write-back-method: git
     argocd-image-updater.argoproj.io/git-branch: main
 spec:
@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: test-app
-        image: ghcr.io/lukehouge/test_app:latest  # This will be updated by ArgoCD Image Updater
+        image: ghcr.io/LukeHouge/fastapi-app:latest  # This will be updated by ArgoCD Image Updater
         ports:
         - containerPort: 8000
           name: http
