@@ -8,6 +8,7 @@ This repository sets up a multi-node Kubernetes cluster with:
 
 - **Kind Cluster**: 1 control-plane + 1 worker node
 - **ArgoCD**: GitOps deployment tool for managing applications
+- **Podinfo**: Demo application showcasing Kubernetes features
 - **Port Forwarding**: Services exposed on localhost:30080 and localhost:30081
 
 ## 📁 Repository Structure
@@ -174,4 +175,56 @@ kubectl get applications -n argocd
 
 # Force sync
 kubectl patch app default -n argocd --type='merge' -p='{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
+```
+
+## 🎯 Demo Features with Podinfo
+
+Podinfo is included as a demo application to showcase Kubernetes capabilities:
+
+### Basic Kubernetes Concepts
+```bash
+# View deployment and replica sets
+kubectl get deployments,replicasets,pods -l app.kubernetes.io/name=podinfo
+
+# Scale deployment manually
+kubectl scale deployment podinfo --replicas=5
+
+# View service and endpoints
+kubectl get svc,endpoints podinfo
+```
+
+### Horizontal Pod Autoscaler (HPA)
+```bash
+# Check HPA status
+kubectl get hpa podinfo
+
+# Generate load to trigger autoscaling
+kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh
+# Inside the pod:
+while true; do wget -q -O- http://podinfo:9898/; done
+```
+
+### Rolling Updates
+```bash
+# Update image version to trigger rolling update
+kubectl set image deployment/podinfo podinfod=stefanprodan/podinfo:6.5.3
+
+# Watch rolling update in progress
+kubectl rollout status deployment/podinfo
+
+# View rollout history
+kubectl rollout history deployment/podinfo
+```
+
+### Health Checks and Monitoring
+```bash
+# Check health endpoints
+curl localhost:30080/healthz
+curl localhost:30080/readyz
+
+# View metrics (Prometheus format)
+curl localhost:30080/metrics
+
+# Check resource usage
+kubectl top pods -l app.kubernetes.io/name=podinfo
 ```

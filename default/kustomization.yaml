@@ -5,3 +5,4 @@ namespace: default # Override namespace for all resources in kustomization
 resources:
 - goldpinger.yaml
 - debug.yaml
+- podinfo.yaml
