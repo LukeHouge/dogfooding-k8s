@@ -4,8 +4,8 @@ configs:
     exec.enabled: "true"
     kustomize.buildOptions: --enable-helm
   params:
-    controller.repo.server.timeout.seconds: "300"
-    server.repo.server.timeout.seconds: "300"
+    controller.repo.server.timeout.seconds: "30"
+    server.repo.server.timeout.seconds: "30"
   repositories:
     argoproj-helm:
       type: helm
