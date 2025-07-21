@@ -1,0 +1,71 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dramatiq-worker
+  namespace: microservices
+  labels:
+    app.kubernetes.io/name: dramatiq-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dramatiq-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dramatiq-worker
+    spec:
+      containers:
+      - name: dramatiq-worker
+        image: ghcr.io/lukehouge/fastapi-worker:latest
+        env:
+        - name: REDIS_URL
+          value: "redis://redis:6379"
+        - name: DOUBLER_SERVICE_URL
+          value: "http://doubler-service:8001"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        # Worker doesn't need health checks since it's a background process
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: dramatiq-worker-hpa
+  namespace: microservices
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: dramatiq-worker
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30
+      - type: Pods
+        value: 2
+        periodSeconds: 30
+      selectPolicy: Max
+    scaleDown:
+      stabilizationWindowSeconds: 120
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60

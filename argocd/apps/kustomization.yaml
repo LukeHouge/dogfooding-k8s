@@ -5,3 +5,4 @@ resources:
 - default.yaml
 - argocd.yaml
 - test-app.yaml
+- microservices.yaml
