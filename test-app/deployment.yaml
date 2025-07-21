@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: test-app
-        image: ghcr.io/lukehouge/fastapi-app:12ade83cca768aec87aac8f26fde33ac87075239  # This will be updated by ArgoCD Image Updater
+        image: ghcr.io/lukehouge/fastapi-app:latest
         ports:
         - containerPort: 8000
           name: http
@@ -40,13 +40,17 @@ spec:
             memory: 512Mi
         readinessProbe:
           httpGet:
-            path: /health
+            path: /
             port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 5
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
         livenessProbe:
           httpGet:
-            path: /health
+            path: /
             port: 8000
-          initialDelaySeconds: 15
-          periodSeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
